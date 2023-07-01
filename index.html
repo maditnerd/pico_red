@@ -6,35 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     
-    <title>Hello, world!</title>
+    <title>PicoNode</title>
 </head>
 
 <body>
     <main class="container">
-        <h1>Connexion</h1>
-        <form>
-            <!-- Grid -->
-            <div class="grid">
-                <!-- Markup example 1: input is inside label -->
-                <label for="email">
-                    Email
-                    <input type="text" id="email" name="firstname" placeholder="john@doe.com" required>
-                </label>
-
-                <label for="password">
-                    Mot de passe
-                    <input type="text" id="password" name="lastname" placeholder="password1" required>
-                </label>
-
-                <label for="server">
-                    Serveur
-                    <input type="text" id="server" name="lastname" placeholder="https://nodered.example.org" required>
-                </label>
-
-
-            </div>
-            <button onclick="login();">Submit</button>
-        </form>
+     <div id="login_page"></div>
+  
     </main>
     <script src="reconnecting-websocket.min.js"></script>
     <script src="ws.js"></script>
