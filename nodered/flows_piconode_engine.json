@@ -1,0 +1,188 @@
+[
+    {
+        "id": "aa54d99a777d16e9",
+        "type": "tab",
+        "label": "PicoNode Engine",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f4e39a4cba8b69c2",
+        "type": "websocket in",
+        "z": "aa54d99a777d16e9",
+        "name": "",
+        "server": "a003f77b591d0185",
+        "client": "",
+        "x": 90,
+        "y": 40,
+        "wires": [
+            [
+                "722d89339b02dc38"
+            ]
+        ]
+    },
+    {
+        "id": "722d89339b02dc38",
+        "type": "json",
+        "z": "aa54d99a777d16e9",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 230,
+        "y": 40,
+        "wires": [
+            [
+                "9fed29343d8630dd"
+            ]
+        ]
+    },
+    {
+        "id": "9fed29343d8630dd",
+        "type": "switch",
+        "z": "aa54d99a777d16e9",
+        "name": "login",
+        "property": "payload.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "login",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 90,
+        "y": 120,
+        "wires": [
+            [
+                "01a13da7bc0ece6e",
+                "90171a7e0ead03fe"
+            ]
+        ]
+    },
+    {
+        "id": "01a13da7bc0ece6e",
+        "type": "debug",
+        "z": "aa54d99a777d16e9",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 500,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "9aec93fc27942ecf",
+        "type": "switch",
+        "z": "aa54d99a777d16e9",
+        "name": "token",
+        "property": "payload.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "login",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 90,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "da5bd60891ef02e8",
+        "type": "switch",
+        "z": "aa54d99a777d16e9",
+        "name": "get",
+        "property": "payload.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "get",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 90,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "90171a7e0ead03fe",
+        "type": "function",
+        "z": "aa54d99a777d16e9",
+        "name": "function 2",
+        "func": "var users = global.get(\"users\");\nvar email = msg.payload.email;\nvar password = msg.payload.password;\n\nif (email in users) {\n    const saltedPassword = password + global.get(\"salt\");\n    const enteredHash = cryptoJs.SHA256(saltedPassword).toString();\n    if (users[email].password === enteredHash) {\n        msg.payload = \"Login successful\";\n    } else {\n        msg.payload = \"Login failed\";\n    }\n} else {\n    msg.payload = \"User doesn't exists\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "cryptoJs",
+                "module": "crypto-js"
+            }
+        ],
+        "x": 260,
+        "y": 180,
+        "wires": [
+            [
+                "32e541f3a8e85f71",
+                "2535bd1b90ed33f6"
+            ]
+        ]
+    },
+    {
+        "id": "32e541f3a8e85f71",
+        "type": "debug",
+        "z": "aa54d99a777d16e9",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 420,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "2535bd1b90ed33f6",
+        "type": "websocket out",
+        "z": "aa54d99a777d16e9",
+        "name": "",
+        "server": "a003f77b591d0185",
+        "client": "",
+        "x": 410,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "a003f77b591d0185",
+        "type": "websocket-listener",
+        "path": "/",
+        "wholemsg": "false"
+    }
+]
