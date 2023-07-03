@@ -9,6 +9,14 @@ server = localStorage.getItem(app_id + "server");
 
 temp_login = null;
 
+function loading() {
+  var bar = new ldBar(".ldBar", {
+    "value":100,
+    "stroke-width":0
+  });
+}
+loading();
+
 function login() {
     email = document.getElementById("email").value;
     password = document.getElementById("password").value;
@@ -31,10 +39,20 @@ function login() {
     console.log(user);
 }
 
+function show_loading(){
+    document.getElementById("loading_screen").style.visibility = "visible";
+}
+function hide_loading(){
+    document.getElementById("loading_screen").style.visibility = "hidden";
+}
+
+
 if (server_exists()) {
-    console.log("server_exists");
+    console.log("🖲️ Server [OK]");
+
     if(login_exists()){
-        connect()
+        console.log("🧔‍♂️ User [OK]")
+        connect();
     } else {
         renderer("login");
     }
@@ -51,14 +69,17 @@ function check_connect(server) {
     console.log(server);
     pattern = /^([a-zA-Z0-9]+\.)*[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/;
     if (pattern.test(server)) {
+        show_loading();
         const socket = new WebSocket("wss://" + server);
         socket.onopen = function() {
+            hide_loading();
             console.log("Connexion OK")
             socket.close();
             localStorage.setItem(app_id + "server", server);
             location.reload();
         }
         socket.onerror = function() {
+            hide_loading();
             swal("Connexion échoué", "Etes vous sûr de l'avoir bien tapé ?", "error");
             socket.close();
         }
@@ -67,40 +88,6 @@ function check_connect(server) {
         swal("Adresse Invalide", "", "error");
     }
 }
-
-
-
-function onopen() {
-
-}
-
-/*
-    const rws = new ReconnectingWebSocket("wss://" + server);
-    rws.addEventListener('open', () => {
-        if(!login_exists){
-            renderer("login","components/login.html");
-        }
-});
-*/
-
-
-/*
-    if (login_exists()) {
-        console.log("Démarrage");
-        user = localStorage.getItem(app_id + "user", user);
-
-        try {
-            user = JSON.parse(user);
-        } catch (error) {
-            console.log("Données utilisateur corrompu");
-            localStorage.removeItem(app_id + "user");
-            login_renderer();
-        }
-    } else {
-        console.log("Login nécesssaire");
-        renderer("login", "components/login.html");
-    }
-*/
 
 function login_exists() {
     // Vérifier si l'objet user existe dans le localstorage
@@ -129,11 +116,81 @@ function websocket_receiver(event) {
 }
 
 function login_connect() {
+    email = document.getElementById("email").value;
+    password = document.getElementById("password").value;
+    check_login(email, password)
+
+
+}
+
+function connect() {
     const rws = new ReconnectingWebSocket("wss://" + server);
     rws.addEventListener('open', () => {
-        rws.send(JSON.stringify(temp_login));
     });
-    rws.onmessage = websocket_receiver;
+    rws.onmessage = receive;
+}
+
+function resetlogin(){
+    localStorage.removeItem(app_id + "user");
+}
+
+function check_login(email, password) {
+    pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (pattern.test(email)) {
+        const socket = new WebSocket("wss://" + server);
+        show_loading();
+        socket.onopen = function() {
+            console.log("Connexion OK")
+            login_obj = {
+                "type":"login",
+                "email":email,
+                "password":password
+            }
+            socket.send(JSON.stringify(login_obj));
+            console.log(login_obj);
+        }
+        socket.onmessage = function(event) {
+            hide_loading();
+            console.log(event.data);
+            try{
+                json_token = JSON.parse(event.data);
+            } catch (error) {
+                swal("Login échoué", "Le serveur a répondu une réponse incorrecte", "error");
+                socket.close();
+                return;
+            }
+            switch(json_token.status){
+                case "success":
+                    token = {
+                        token:json_token.token,
+                        email:email
+                    };
+                    localStorage.setItem(app_id + "user", JSON.stringify(token));
+                    socket.close();
+                    location.reload();
+                break;
+                case "not_found":
+                    swal("Utilisateur inconnu", "Email inccorect", "error");
+                break;
+                case "failed":
+                    swal("Mot de passe incorrect","", "error");
+                break;
+                default:
+                    swal("Login échoué", "Erreur inconnu...", "", "error");
+                break;
+            }
+         
+            
+        }
+        socket.onerror = function() {
+            hide_loading();
+            swal("Connexion échoué", "Le serveur marche pas 😭😭😭😿😿😿😭😭😭", "error");
+            socket.close();
+        }
+    } else {
+        console.log("Email invalide");
+        swal("Email Invalide!", "", "error");
+    }
 }
 
 function mass_renderer() {
