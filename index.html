@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    
+    <link rel="stylesheet" href="lib/loading-bar.min.css">
+    <link rel="stylesheet" href="theme.css">
     <title>PicoNode</title>
 </head>
 
@@ -16,6 +17,8 @@
           <li><strong>PicoNode</strong></li>
         </ul>
         <ul>
+          <li></li>
+          <li></li>
           <li><a href="install.html">Installation</a></li>
         </ul>
       </nav>
@@ -25,8 +28,14 @@
      <div id="login"></div>
 
     </main>
+
+    <div id="loading_screen" class="ldBar" data-preset="bubble" data-pattern-size="64" data-fill="/lib/cloud.svg" style="width:100%;height:100%"></div>
+    <script src="lib/loading-bar.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="reconnecting-websocket.min.js"></script>
+    <script src="index.js"></script>
     <script src="ws.js"></script>
-</body>
+
+  </body>
+  
 </html>
