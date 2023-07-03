@@ -34,7 +34,8 @@
         "y": 40,
         "wires": [
             [
-                "9fed29343d8630dd"
+                "9fed29343d8630dd",
+                "01a13da7bc0ece6e"
             ]
         ]
     },
@@ -73,11 +74,12 @@
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "false",
+        "complete": "true",
+        "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 500,
-        "y": 120,
+        "x": 600,
+        "y": 100,
         "wires": []
     },
     {
@@ -131,7 +133,7 @@
         "type": "function",
         "z": "aa54d99a777d16e9",
         "name": "function 2",
-        "func": "var users = global.get(\"users\");\nvar email = msg.payload.email;\nvar password = msg.payload.password;\n\nif (email in users) {\n    const saltedPassword = password + global.get(\"salt\");\n    const enteredHash = cryptoJs.SHA256(saltedPassword).toString();\n    if (users[email].password === enteredHash) {\n        msg.payload = \"Login successful\";\n    } else {\n        msg.payload = \"Login failed\";\n    }\n} else {\n    msg.payload = \"User doesn't exists\";\n}\nreturn msg;",
+        "func": "var users = global.get(\"users\");\n\nvar email = msg.payload.email;\nvar password = msg.payload.password;\nvar status = \"unknown\"\nvar token = null\nvar tokens = {};\n\nif (email in users) {\n    const saltedPassword = password + global.get(\"salt\");\n    const enteredHash = cryptoJs.SHA256(saltedPassword).toString();\n    if (users[email].password === enteredHash) {\n        tokens = global.get(\"tokens\");\n        // Associez le token à l'utilisateur\n        token = crypto.randomUUID().toString();\n        tokens[token] = {\n            email: email,\n            role: users[email].role\n        };\n        tokens = global.set(\"token\");\n        status = \"success\"\n    } else {\n        status = \"failed\"\n    }\n} else {\n    status = \"not_found\"\n}\n\nmsg.payload = {\n    \"type\":\"provide_token\",\n    \"status\":status,\n    \"token\":token\n}\n \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -140,33 +142,20 @@
             {
                 "var": "cryptoJs",
                 "module": "crypto-js"
+            },
+            {
+                "var": "crypto",
+                "module": "crypto"
             }
         ],
         "x": 260,
         "y": 180,
         "wires": [
             [
-                "32e541f3a8e85f71",
-                "2535bd1b90ed33f6"
+                "2535bd1b90ed33f6",
+                "01a13da7bc0ece6e"
             ]
         ]
-    },
-    {
-        "id": "32e541f3a8e85f71",
-        "type": "debug",
-        "z": "aa54d99a777d16e9",
-        "name": "debug 9",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 420,
-        "y": 180,
-        "wires": []
     },
     {
         "id": "2535bd1b90ed33f6",
@@ -175,8 +164,77 @@
         "name": "",
         "server": "a003f77b591d0185",
         "client": "",
-        "x": 410,
+        "x": 450,
         "y": 260,
+        "wires": []
+    },
+    {
+        "id": "282bedc78b056eec",
+        "type": "inject",
+        "z": "aa54d99a777d16e9",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 220,
+        "y": 520,
+        "wires": [
+            [
+                "c7b1c5a96aa54310"
+            ]
+        ]
+    },
+    {
+        "id": "c7b1c5a96aa54310",
+        "type": "function",
+        "z": "aa54d99a777d16e9",
+        "name": "function 3",
+        "func": "var token = crypto.randomUUID().toString;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "crypto",
+                "module": "crypto"
+            }
+        ],
+        "x": 380,
+        "y": 520,
+        "wires": [
+            [
+                "84a1aa6a01d85102"
+            ]
+        ]
+    },
+    {
+        "id": "84a1aa6a01d85102",
+        "type": "debug",
+        "z": "aa54d99a777d16e9",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 520,
         "wires": []
     },
     {

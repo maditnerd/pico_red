@@ -58,7 +58,7 @@
                 "module": "crypto-js"
             }
         ],
-        "x": 270,
+        "x": 410,
         "y": 200,
         "wires": [
             [
@@ -78,8 +78,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 520,
-        "y": 160,
+        "x": 640,
+        "y": 220,
         "wires": []
     },
     {
@@ -122,80 +122,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 270,
+        "x": 410,
         "y": 260,
         "wires": [
             []
         ]
-    },
-    {
-        "id": "8b48027bb6137922",
-        "type": "inject",
-        "z": "3b3b42dda42b6fc7",
-        "name": "",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 100,
-        "y": 440,
-        "wires": [
-            [
-                "580a8c65f48a087b"
-            ]
-        ]
-    },
-    {
-        "id": "580a8c65f48a087b",
-        "type": "function",
-        "z": "3b3b42dda42b6fc7",
-        "name": "function 3",
-        "func": "const saltedPassword = \"admin\" + global.get(\"salt\");\nconst enteredHash = CryptoJS.SHA256(saltedPassword).toString();\nconst hash = \"8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918\";\nmsg.payload = enteredHash + \" <--> \" + hash;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [
-            {
-                "var": "CryptoJS",
-                "module": "crypto-js"
-            }
-        ],
-        "x": 260,
-        "y": 440,
-        "wires": [
-            [
-                "60b48b621a1c9025"
-            ]
-        ]
-    },
-    {
-        "id": "60b48b621a1c9025",
-        "type": "debug",
-        "z": "3b3b42dda42b6fc7",
-        "name": "debug 8",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 420,
-        "y": 440,
-        "wires": []
     },
     {
         "id": "24533ddee20eaef7",
@@ -242,8 +173,46 @@
                 "module": "crypto-js"
             }
         ],
-        "x": 270,
+        "x": 410,
         "y": 120,
+        "wires": [
+            [
+                "ddcfac809cca322d"
+            ]
+        ]
+    },
+    {
+        "id": "1b2f24a18c9cfdea",
+        "type": "inject",
+        "z": "3b3b42dda42b6fc7",
+        "name": "Create Sessions / Tokens",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 320,
+        "wires": [
+            [
+                "bcdaa9a6dcd47d2f"
+            ]
+        ]
+    },
+    {
+        "id": "bcdaa9a6dcd47d2f",
+        "type": "function",
+        "z": "3b3b42dda42b6fc7",
+        "name": "Create Sessions / Tokens",
+        "func": "if (global.get(\"sessions\") === undefined) {\n    global.set(\"sessions\", {});\n}\nif (global.get(\"tokens\") === undefined) {\n    global.set(\"tokens\", {});\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 320,
         "wires": [
             [
                 "ddcfac809cca322d"
