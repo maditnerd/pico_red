@@ -1,20 +1,74 @@
 [
     {
+        "id": "0d6069c739f7b909",
+        "type": "tab",
+        "label": "📄PicoNodeRed App",
+        "disabled": false,
+        "info": "# Your Application",
+        "env": []
+    },
+    {
         "id": "aa54d99a777d16e9",
         "type": "tab",
-        "label": "PicoNode Engine",
+        "label": "🛠️PicoNode Engine",
         "disabled": false,
         "info": "",
         "env": []
     },
     {
+        "id": "3b3b42dda42b6fc7",
+        "type": "tab",
+        "label": "💽PicoNode Installer",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a003f77b591d0185",
+        "type": "websocket-listener",
+        "path": "/",
+        "wholemsg": "false"
+    },
+    {
+        "id": "27a43885.8a6e16",
+        "type": "websocket-listener",
+        "path": "/ws"
+    },
+    {
+        "id": "df6dea0e2977ec2d",
+        "type": "link in",
+        "z": "0d6069c739f7b909",
+        "name": "WebSocket App In",
+        "links": [
+            "2efb6cdb1b3fb20b"
+        ],
+        "x": 195,
+        "y": 20,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f6db1d37afd1f09a",
+        "type": "link out",
+        "z": "0d6069c739f7b909",
+        "name": "Websocket App Out",
+        "mode": "link",
+        "links": [
+            "ae5ab6781b4ab5a7"
+        ],
+        "x": 715,
+        "y": 20,
+        "wires": []
+    },
+    {
         "id": "f4e39a4cba8b69c2",
         "type": "websocket in",
         "z": "aa54d99a777d16e9",
-        "name": "",
+        "name": "App Websocket (/)",
         "server": "a003f77b591d0185",
         "client": "",
-        "x": 90,
+        "x": 110,
         "y": 40,
         "wires": [
             [
@@ -26,11 +80,11 @@
         "id": "722d89339b02dc38",
         "type": "json",
         "z": "aa54d99a777d16e9",
-        "name": "",
+        "name": "JSON Convert",
         "property": "payload",
         "action": "",
         "pretty": false,
-        "x": 230,
+        "x": 340,
         "y": 40,
         "wires": [
             [
@@ -43,7 +97,7 @@
         "id": "9fed29343d8630dd",
         "type": "switch",
         "z": "aa54d99a777d16e9",
-        "name": "login",
+        "name": "login - token - other",
         "property": "payload.type",
         "propertyType": "msg",
         "rules": [
@@ -51,17 +105,31 @@
                 "t": "eq",
                 "v": "login",
                 "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "token",
+                "vt": "str"
+            },
+            {
+                "t": "else"
             }
         ],
         "checkall": "true",
         "repair": false,
-        "outputs": 1,
-        "x": 90,
-        "y": 120,
+        "outputs": 3,
+        "x": 130,
+        "y": 140,
         "wires": [
             [
                 "01a13da7bc0ece6e",
                 "90171a7e0ead03fe"
+            ],
+            [
+                "78dbd0fb0f642c80"
+            ],
+            [
+                "2efb6cdb1b3fb20b"
             ]
         ]
     },
@@ -69,7 +137,7 @@
         "id": "01a13da7bc0ece6e",
         "type": "debug",
         "z": "aa54d99a777d16e9",
-        "name": "debug 6",
+        "name": "WS Debugger",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -78,61 +146,15 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 600,
-        "y": 100,
+        "x": 760,
+        "y": 40,
         "wires": []
-    },
-    {
-        "id": "9aec93fc27942ecf",
-        "type": "switch",
-        "z": "aa54d99a777d16e9",
-        "name": "token",
-        "property": "payload.type",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "login",
-                "vt": "str"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 1,
-        "x": 90,
-        "y": 280,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "da5bd60891ef02e8",
-        "type": "switch",
-        "z": "aa54d99a777d16e9",
-        "name": "get",
-        "property": "payload.type",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "get",
-                "vt": "str"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 1,
-        "x": 90,
-        "y": 320,
-        "wires": [
-            []
-        ]
     },
     {
         "id": "90171a7e0ead03fe",
         "type": "function",
         "z": "aa54d99a777d16e9",
-        "name": "function 2",
+        "name": "\"type\":\"login\"",
         "func": "var users = global.get(\"users\");\n\nvar email = msg.payload.email;\nvar password = msg.payload.password;\nvar status = \"unknown\"\nvar token = null\nvar tokens = {};\n\nif (email in users) {\n    const saltedPassword = password + global.get(\"salt\");\n    const enteredHash = cryptoJs.SHA256(saltedPassword).toString();\n    if (users[email].password === enteredHash) {\n        tokens = global.get(\"tokens\");\n        // Associez le token à l'utilisateur\n        token = crypto.randomUUID().toString();\n        tokens[token] = {\n            email: email,\n            role: users[email].role\n        };\n        tokens = global.set(\"token\");\n        status = \"success\"\n    } else {\n        status = \"failed\"\n    }\n} else {\n    status = \"not_found\"\n}\n\nmsg.payload = {\n    \"type\":\"provide_token\",\n    \"status\":status,\n    \"token\":token\n}\n \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
@@ -148,8 +170,8 @@
                 "module": "crypto"
             }
         ],
-        "x": 260,
-        "y": 180,
+        "x": 430,
+        "y": 120,
         "wires": [
             [
                 "2535bd1b90ed33f6",
@@ -161,11 +183,11 @@
         "id": "2535bd1b90ed33f6",
         "type": "websocket out",
         "z": "aa54d99a777d16e9",
-        "name": "",
+        "name": "App Websocket",
         "server": "a003f77b591d0185",
         "client": "",
-        "x": 450,
-        "y": 260,
+        "x": 720,
+        "y": 140,
         "wires": []
     },
     {
@@ -189,8 +211,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 220,
-        "y": 520,
+        "x": 140,
+        "y": 440,
         "wires": [
             [
                 "c7b1c5a96aa54310"
@@ -213,8 +235,8 @@
                 "module": "crypto"
             }
         ],
-        "x": 380,
-        "y": 520,
+        "x": 300,
+        "y": 440,
         "wires": [
             [
                 "84a1aa6a01d85102"
@@ -233,14 +255,316 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 540,
-        "y": 520,
+        "x": 460,
+        "y": 440,
         "wires": []
     },
     {
-        "id": "a003f77b591d0185",
-        "type": "websocket-listener",
-        "path": "/",
-        "wholemsg": "false"
+        "id": "78dbd0fb0f642c80",
+        "type": "function",
+        "z": "aa54d99a777d16e9",
+        "name": "\"type\":\"token\"",
+        "func": "",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "cryptoJs",
+                "module": "crypto-js"
+            },
+            {
+                "var": "crypto",
+                "module": "crypto"
+            }
+        ],
+        "x": 420,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2efb6cdb1b3fb20b",
+        "type": "link out",
+        "z": "aa54d99a777d16e9",
+        "name": "Websocket Engine IN",
+        "mode": "link",
+        "links": [
+            "df6dea0e2977ec2d"
+        ],
+        "x": 315,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "ae5ab6781b4ab5a7",
+        "type": "link in",
+        "z": "aa54d99a777d16e9",
+        "name": "Websocket Engine Out",
+        "links": [
+            "f6db1d37afd1f09a"
+        ],
+        "x": 545,
+        "y": 320,
+        "wires": [
+            [
+                "2535bd1b90ed33f6"
+            ]
+        ]
+    },
+    {
+        "id": "9b87b3ec05c97c47",
+        "type": "inject",
+        "z": "3b3b42dda42b6fc7",
+        "name": "Create Admin",
+        "props": [
+            {
+                "p": "email",
+                "v": "admin@admin.com",
+                "vt": "str"
+            },
+            {
+                "p": "password",
+                "v": "admin",
+                "vt": "str"
+            },
+            {
+                "p": "role",
+                "v": "admin",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 260,
+        "wires": [
+            [
+                "d50509cd9620d1e0"
+            ]
+        ]
+    },
+    {
+        "id": "d50509cd9620d1e0",
+        "type": "function",
+        "z": "3b3b42dda42b6fc7",
+        "name": "Create User",
+        "func": "\n// Check if users exists\nif (global.get(\"users\") === undefined) {\n    global.set(\"users\", {});\n}\nvar users = global.get(\"users\");\n\n// Check if user already created\nif (msg.email in users) {\n\n    msg.payload = \"Admin already created\";\n} else {\n    users[msg.email] = {\n        \"password\": CryptoJS.SHA256(msg.password + global.get(\"salt\")).toString(),\n        \"role\": msg.role\n    }\n    global.set(\"users\", users);\n    msg.payload = \"Admin succesfully created\";\n}\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "CryptoJS",
+                "module": "crypto-js"
+            }
+        ],
+        "x": 410,
+        "y": 260,
+        "wires": [
+            [
+                "ddcfac809cca322d"
+            ]
+        ]
+    },
+    {
+        "id": "ddcfac809cca322d",
+        "type": "debug",
+        "z": "3b3b42dda42b6fc7",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "1ac4636dc8d52a28",
+        "type": "comment",
+        "z": "3b3b42dda42b6fc7",
+        "name": "Module to install",
+        "info": "",
+        "x": 100,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "0536a4671a90e429",
+        "type": "inject",
+        "z": "3b3b42dda42b6fc7",
+        "name": "❌Delete Users",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 120,
+        "y": 480,
+        "wires": [
+            [
+                "4a9d9bc3a3c02259"
+            ]
+        ]
+    },
+    {
+        "id": "4a9d9bc3a3c02259",
+        "type": "function",
+        "z": "3b3b42dda42b6fc7",
+        "name": "Delete Users",
+        "func": "global.set(\"users\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "24533ddee20eaef7",
+        "type": "inject",
+        "z": "3b3b42dda42b6fc7",
+        "name": "Create Salt",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 220,
+        "wires": [
+            [
+                "bfd72f36af72ef86"
+            ]
+        ]
+    },
+    {
+        "id": "bfd72f36af72ef86",
+        "type": "function",
+        "z": "3b3b42dda42b6fc7",
+        "name": "Create Salt",
+        "func": "// Code added here will be run once\n// whenever the node is started.\nconst saltLength = 16; // Longueur du salt en octets\nconst salt = CryptoJS.lib.WordArray.random(saltLength);\nmsg.payload = salt.toString();\nglobal.set(\"salt\", msg.payload);\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "CryptoJS",
+                "module": "crypto-js"
+            }
+        ],
+        "x": 410,
+        "y": 220,
+        "wires": [
+            [
+                "ddcfac809cca322d"
+            ]
+        ]
+    },
+    {
+        "id": "1b2f24a18c9cfdea",
+        "type": "inject",
+        "z": "3b3b42dda42b6fc7",
+        "name": "Create Sessions / Tokens",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 300,
+        "wires": [
+            [
+                "bcdaa9a6dcd47d2f"
+            ]
+        ]
+    },
+    {
+        "id": "bcdaa9a6dcd47d2f",
+        "type": "function",
+        "z": "3b3b42dda42b6fc7",
+        "name": "Create Sessions / Tokens",
+        "func": "if (global.get(\"sessions\") === undefined) {\n    global.set(\"sessions\", {});\n}\nif (global.get(\"tokens\") === undefined) {\n    global.set(\"tokens\", {});\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 300,
+        "wires": [
+            [
+                "ddcfac809cca322d"
+            ]
+        ]
+    },
+    {
+        "id": "8a663b4cf539b3d6",
+        "type": "inject",
+        "z": "3b3b42dda42b6fc7",
+        "name": "💽 Install",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 100,
+        "wires": [
+            [
+                "bfd72f36af72ef86",
+                "d50509cd9620d1e0",
+                "bcdaa9a6dcd47d2f"
+            ]
+        ]
+    },
+    {
+        "id": "883a3718f41a8e5a",
+        "type": "comment",
+        "z": "3b3b42dda42b6fc7",
+        "name": "Cleaner",
+        "info": "",
+        "x": 70,
+        "y": 380,
+        "wires": []
     }
 ]
