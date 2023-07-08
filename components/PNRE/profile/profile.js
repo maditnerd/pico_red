@@ -1,0 +1,1 @@
+pnre.rendererTo('profile_container', 'profile/profile_user',true)

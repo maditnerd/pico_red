@@ -1,0 +1,24 @@
+<div id="profile_form">
+    <!-- Markup example 1: input is inside label -->
+    <label for="email">
+        Email
+        <input type="text" id="email" name="email" placeholder="john@doe.com" required>
+    </label>
+    <label for="firstname">
+        First Name
+        <input type="text" id="firstname" placeholder="John" required>
+    </label>
+    <label for="lastname">
+        Last Name
+        <input type="text" id="lastname" placeholder="Doe" required>
+    </label>
+    <label for="lastname">
+        Role
+        <select id="roles">
+        </select>
+    </label>
+
+    <button>Save</button>
+    <button onclick="pnre.disconnect();">Logout</button>
+    <button onclick="pnre.disconnectAllSessions();">Disconnect all sessions</button>
+</div>

@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <link rel="stylesheet" href="lib/loading-bar.min.css">
-    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="components/PNRE/lib/loading-bar.min.css">
+    <link rel="stylesheet" href="components/PNRE/theme.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
     <title>PicoNode</title>
 </head>
@@ -19,7 +19,7 @@
         </ul>
         <ul>
           <li><a href="install.html">Installation</a></li>
-          <li><a href="#" onclick="renderer_to('main', 'profile',true)" data-letters="?"></a></li>
+          <li><a id="profile" href="#" onclick="pnre.rendererTo('main', 'profile/profile',true)" data-letters="?"></a></li>
         </ul>
       </nav>
     </div>
@@ -30,13 +30,11 @@
 
     </main>
 
-    <div id="loading_screen" class="ldBar" data-preset="bubble" data-pattern-size="64" data-fill="/lib/cloud.svg" style="width:100%;height:100%"></div>
-    <script src="lib/loading-bar.min.js"></script>
+    <div id="loading_screen" class="ldBar" data-preset="bubble" data-pattern-size="64" data-fill="components/PNRE/lib/cloud.svg" style="width:100%;height:100%"></div>
+    <script src="components/PNRE/lib/loading-bar.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="reconnecting-websocket.min.js"></script>
-    <script src="index.js"></script>
-    <script src="engine.js"></script>
-
+    <script src="components/PNRE/lib/reconnecting-websocket.min.js"></script>
+    <script src="components/PNRE/engine.js"></script>
   </body>
   
 </html>
